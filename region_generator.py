@@ -4,6 +4,7 @@ from matplotlib.colors import LinearSegmentedColormap
 from perlin_noise import PerlinNoise
 
 from border import crossings_in_year
+from my_noise import MyNoise
 
 
 # https://en.wikipedia.org/wiki/Perlin_noise
@@ -16,28 +17,18 @@ from border import crossings_in_year
 # https://www.labri.fr/perso/nrougier/from-python-to-numpy/#exercise 
 
 
-BLUE = (0, 0, 1, 1)
-RED = (1, 0, 0, 1)
+BLUE = (0.1, 0.1, 0.1, 1)
+RED = (0.3, 0.3, 0.3, 1)
 WHITE = (1, 1, 1, 1)
-MAROON = (0.7, 0, 0, 1)
-GREEN = (0, 0.8, 0, 1)
+MAROON = (0.7, 0.7, 0.7, 1)
+GREEN = (0, 0, 0, 1)
 TRANSPARENT = (0, 0, 0, 0)
 
 
-years = range(2018, 2022)
-crossings = [crossings_in_year(yr) for yr in years]
-
-# octaves = [0.5, 1.5, 0.5, 1.5]
-octaves = [1+c/sum(crossings) for c in crossings]
-
-seeds = years
-
-fig, axs = plt.subplots(2, 2, figsize=(6, 9))
-# fig.subplots_adjust(left=0.02, bottom=0.06, right=0.95, top=0.94, wspace=0.05)
-for o, yr, seed, ax in zip(octaves, years, seeds, axs.ravel()):
+def generate_image(octaves, size, seed, ax, no_frame=False): 
+    xpix, ypix = size
     # can replace Perlin noise with other noise function (based on data?)
-    noise = PerlinNoise(octaves=o, seed=seed)
-    xpix, ypix = 40, 40
+    noise = PerlinNoise(octaves=octaves, seed=seed)
     pic = [[noise([i/xpix, j/ypix]) for j in range(xpix)] for i in range(ypix)]
 
     colors = [
@@ -59,11 +50,66 @@ for o, yr, seed, ax in zip(octaves, years, seeds, axs.ravel()):
     # note: origin='lower' flips image horizontally
     # im = ax.imshow(pic, interpolation='nearest', origin='lower', cmap=cm)
     im = ax.imshow(pic, cmap=cm)
-    ax.set_title(f"Octaves: {round(o, 2)}, Yr: {yr}")
 
     # plot clean up
     ax.axes.xaxis.set_visible(False)
     ax.axes.yaxis.set_visible(False)
+    if no_frame: 
+        ax.axis('off')
 
-plt.savefig("regions.png", transparent=True)
+    return ax
 
+
+def generate_demo(): 
+    years = range(2018, 2022)
+    crossings = [crossings_in_year(yr) for yr in years]
+    octaves = [1+c/sum(crossings) for c in crossings]
+    seeds = years
+
+    fig, axs = plt.subplots(2, 2, figsize=(6, 9))
+    # fig.subplots_adjust(left=0.02, bottom=0.06, right=0.95, top=0.94, wspace=0.05)
+    for o, yr, seed, ax in zip(octaves, years, seeds, axs.ravel()):
+        xpix, ypix = 12, 12
+        ax  = generate_image(o, (xpix, ypix), seed, ax)
+        ax.set_title(f"Octaves: {round(o, 2)}, Yr: {yr}")
+
+    plt.savefig("regions.png", transparent=True)
+
+
+def generate_samples_seeds(seeds=None):
+    if seeds is None: 
+        seeds = range(1, 25)
+
+    years = range(2019, 2022)
+    crossings = [crossings_in_year(yr) for yr in years]
+    octaves = 1+crossings[-1]/sum(crossings)
+    xpix, ypix = 15, 10
+
+    for i, seed in enumerate(seeds): 
+        fig, ax = plt.subplots(1, 1, figsize=(1, 1))
+        ax = generate_image(octaves, (xpix, ypix), seed, ax, no_frame=True)
+        ax.set_title(f"Seed: {seed}")
+        plt.savefig(f"img/seed_samples/seed_sample_{seed}.png", transparent=True)
+        plt.close(fig)
+
+
+def generate_final(seed, size=(15, 10)): 
+    years = range(2019, 2022)
+    crossings = [crossings_in_year(yr) for yr in years]
+    octaves = 1+crossings[-1]/sum(crossings)
+    fig, ax = plt.subplots(1, 1, figsize=(1,1))
+    generate_image(octaves, size, seed, ax, no_frame=True)
+
+    plt.savefig("final.png", transparent=True)
+
+
+def main():
+    # generate_samples()
+
+    seeds = range(1, 25) 
+    # seeds = range(25, 51)
+    generate_samples_seeds(seeds) 
+
+
+if __name__ == '__main__': 
+    main()
