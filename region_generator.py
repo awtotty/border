@@ -10,6 +10,12 @@ from border import crossings_in_year
 # https://predictablynoisy.com/matplotlib/gallery/images_contours_and_fields/custom_cmap.html#sphx-glr-gallery-images-contours-and-fields-custom-cmap-py
 
 
+# TODO: 
+# https://en.wikipedia.org/wiki/Procedural_texture
+# https://en.wikipedia.org/wiki/Procedural_texture#Self-organizing_textures 
+# https://www.labri.fr/perso/nrougier/from-python-to-numpy/#exercise 
+
+
 BLUE = (0, 0, 1, 1)
 RED = (1, 0, 0, 1)
 WHITE = (1, 1, 1, 1)
