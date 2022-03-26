@@ -42,6 +42,7 @@ def generate_image(octaves, size, seed, ax, no_frame=False):
 
     colors = [
         BLUE, 
+        TRANSPARENT, 
         RED, 
         TRANSPARENT, 
         TRANSPARENT, 
@@ -49,6 +50,7 @@ def generate_image(octaves, size, seed, ax, no_frame=False):
         TRANSPARENT, 
         TRANSPARENT, 
         MAROON, 
+        TRANSPARENT, 
         GREEN,
     ]
 
@@ -96,7 +98,8 @@ def generate_samples_seeds(seeds=None, size=(15, 10)):
     crossings = crossings_in_year(year)
     # octaves = 1 + crossings/(US_POP+MEXICO_POP)    
     # octaves = 2 * crossings/(US_POP+MEXICO_POP)    
-    octaves = 1 + 5 * crossings/(US_POP+MEXICO_POP)    
+    # octaves = 1 + 5 * crossings/(US_POP+MEXICO_POP)    
+    octaves = get_octaves(crossings)
     print(f"octaves: {octaves}")
     xpix, ypix = size
     
@@ -107,11 +110,15 @@ def generate_samples_seeds(seeds=None, size=(15, 10)):
         plt.savefig(f"img/seed_samples/seed_sample_{seed}.png", transparent=True, dpi=500)
         plt.close(fig)
 
+def get_octaves(crossings): 
+    return 1 + 5 * crossings/(US_POP+MEXICO_POP)    
+
 
 def generate_final(seed, size=(15, 10)): 
     year = 2021
     crossings = crossings_in_year(year)
-    octaves = 1 + 5 * crossings/(US_POP+MEXICO_POP)    
+    # octaves = 1 + 5 * crossings/(US_POP+MEXICO_POP)    
+    octaves = get_octaves(crossings)
     fig, ax = plt.subplots(1, 1, figsize=(1,1))
     generate_image(octaves, size, seed, ax, no_frame=True)
 
@@ -121,10 +128,14 @@ def generate_final(seed, size=(15, 10)):
 def main():
     # generate_demo()
 
-    seeds = range(1, 51) 
+    # seeds = range(1, 51) 
+    seeds = range(1, 101) 
+    # size=(15,10) works for original image
     generate_samples_seeds(seeds) 
+    # size=(14,10) for crop (but it's not perfect)
+    # generate_samples_seeds(seeds, size=(14,10)) 
 
-    # generate_final(seed=3)
+    # generate_final(seed=46)
 
 
 if __name__ == '__main__': 
