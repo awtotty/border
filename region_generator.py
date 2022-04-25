@@ -137,7 +137,7 @@ def main():
     # generate_samples_seeds(seeds, size=(14,10)) 
 
     # square 
-    generate_samples_seeds(seeds, size=(10,10)) 
+    generate_samples_seeds(seeds, size=(15,10)) 
 
     # generate_final(seed=46)
 
