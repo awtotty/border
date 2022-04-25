@@ -131,9 +131,13 @@ def main():
     # seeds = range(1, 51) 
     seeds = range(1, 101) 
     # size=(15,10) works for original image
-    generate_samples_seeds(seeds) 
+    # generate_samples_seeds(seeds) 
+
     # size=(14,10) for crop (but it's not perfect)
     # generate_samples_seeds(seeds, size=(14,10)) 
+
+    # square 
+    generate_samples_seeds(seeds, size=(10,10)) 
 
     # generate_final(seed=46)
 
